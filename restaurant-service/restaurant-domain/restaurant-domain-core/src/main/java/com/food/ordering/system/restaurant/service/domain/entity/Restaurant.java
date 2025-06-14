@@ -1,11 +1,11 @@
 package com.food.ordering.system.restaurant.service.domain.entity;
 
 import com.food.ordering.system.domain.entity.AggregateRoot;
-import com.food.ordering.system.domain.valueobject.Money;
-import com.food.ordering.system.domain.valueobject.OrderApprovalStatus;
-import com.food.ordering.system.domain.valueobject.OrderStatus;
+import com.food.ordering.system.domain.valueobject.Monnaie;
+import com.food.ordering.system.domain.valueobject.ApprobationCommandeStatus;
+import com.food.ordering.system.domain.valueobject.CommandeStatus;
 import com.food.ordering.system.domain.valueobject.RestaurantId;
-import com.food.ordering.system.restaurant.service.domain.valueobject.OrderApprovalId;
+import com.food.ordering.system.restaurant.service.domain.valueobject.ApprobationCommandeId;
 import lombok.Getter;
 
 import java.util.List;
@@ -13,33 +13,33 @@ import java.util.UUID;
 
 @Getter
 public class Restaurant extends AggregateRoot<RestaurantId> {
-   private OrderApproval orderApproval;
+   private ApprobationCommande approbationCommande;
    private boolean active;
-   private final OrderDetail orderDetail;
+   private final DétailsCommande détailsCommande;
 
    public void validateOrder(List<String> failureMessages) {
-       if (orderDetail.getOrderStatus() != OrderStatus.PAID) {
-           failureMessages.add("Payment is not completed for order: " + orderDetail.getId());
+       if (détailsCommande.getCommandeStatus() != CommandeStatus.PAID) {
+           failureMessages.add("Payment is not completed for order: " + détailsCommande.getId());
        }
-       Money totalAmount = orderDetail.getProducts().stream().map(product -> {
+       Monnaie totalAmount = détailsCommande.getProduits().stream().map(product -> {
            if (!product.isAvailable()) {
-               failureMessages.add("Product with id: " + product.getId().getValue()
+               failureMessages.add("Produit with id: " + product.getId().getValue()
                        + " is not available");
            }
            return product.getPrice().multiply(product.getQuantity());
-       }).reduce(Money.ZERO, Money::add);
+       }).reduce(Monnaie.ZERO, Monnaie::add);
 
-       if (!totalAmount.equals(orderDetail.getTotalAmount())) {
-           failureMessages.add("Price total is not correct for order: " + orderDetail.getId());
+       if (!totalAmount.equals(détailsCommande.getTotalAmount())) {
+           failureMessages.add("Price total is not correct for order: " + détailsCommande.getId());
        }
    }
 
-   public void constructOrderApproval(OrderApprovalStatus orderApprovalStatus) {
-       this.orderApproval = OrderApproval.builder()
-               .orderApprovalId(new OrderApprovalId(UUID.randomUUID()))
+   public void constructOrderApproval(ApprobationCommandeStatus approbationCommandeStatus) {
+       this.approbationCommande = ApprobationCommande.builder()
+               .orderApprovalId(new ApprobationCommandeId(UUID.randomUUID()))
                .restaurantId(this.getId())
-               .orderId(this.getOrderDetail().getId())
-               .approvalStatus(orderApprovalStatus)
+               .orderId(this.getDétailsCommande().getId())
+               .approvalStatus(approbationCommandeStatus)
                .build();
    }
 
@@ -49,9 +49,9 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
 
     private Restaurant(Builder builder) {
         setId(builder.restaurantId);
-        orderApproval = builder.orderApproval;
+        approbationCommande = builder.approbationCommande;
         active = builder.active;
-        orderDetail = builder.orderDetail;
+        détailsCommande = builder.détailsCommande;
     }
 
     public static Builder builder() {
@@ -60,9 +60,9 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
 
     public static final class Builder {
         private RestaurantId restaurantId;
-        private OrderApproval orderApproval;
+        private ApprobationCommande approbationCommande;
         private boolean active;
-        private OrderDetail orderDetail;
+        private DétailsCommande détailsCommande;
 
         private Builder() {
         }
@@ -72,8 +72,8 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
             return this;
         }
 
-        public Builder orderApproval(OrderApproval val) {
-            orderApproval = val;
+        public Builder orderApproval(ApprobationCommande val) {
+            approbationCommande = val;
             return this;
         }
 
@@ -82,8 +82,8 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
             return this;
         }
 
-        public Builder orderDetail(OrderDetail val) {
-            orderDetail = val;
+        public Builder orderDetail(DétailsCommande val) {
+            détailsCommande = val;
             return this;
         }
 

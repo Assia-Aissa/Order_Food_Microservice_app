@@ -2,10 +2,10 @@ package com.food.ordering.system.payment.service.domain.entity;
 
 import com.food.ordering.system.domain.entity.AggregateRoot;
 import com.food.ordering.system.domain.valueobject.ClientId;
-import com.food.ordering.system.domain.valueobject.Money;
-import com.food.ordering.system.domain.valueobject.OrderId;
-import com.food.ordering.system.domain.valueobject.PaymentStatus;
-import com.food.ordering.system.payment.service.domain.valueObject.PaymentId;
+import com.food.ordering.system.domain.valueobject.CommandeId;
+import com.food.ordering.system.domain.valueobject.Monnaie;
+import com.food.ordering.system.domain.valueobject.PaiementStatus;
+import com.food.ordering.system.payment.service.domain.valueObject.PaiementId;
 import lombok.Getter;
 
 import java.time.ZoneId;
@@ -14,19 +14,19 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class Payment extends AggregateRoot<PaymentId> {
+public class Paiement extends AggregateRoot<PaiementId> {
 
-    private final OrderId orderId;
+    private final CommandeId commandeId;
     private final ClientId clientId;
-    private final Money price;
+    private final Monnaie price;
 
-    private PaymentStatus paymentStatus;
+    private PaiementStatus paiementStatus;
     private ZonedDateTime createdAt;
 
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
     public void initializePayment() {
-        setId(new PaymentId(UUID.randomUUID()));
+        setId(new PaiementId(UUID.randomUUID()));
         createdAt = ZonedDateTime.now(ZoneId.of("UTC"));
     }
 
@@ -36,16 +36,16 @@ public class Payment extends AggregateRoot<PaymentId> {
         }
     }
 
-    public void updateStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
+    public void updateStatus(PaiementStatus paiementStatus) {
+        this.paiementStatus = paiementStatus;
     }
 
-    private Payment(Builder builder) {
-        setId(builder.paymentId);
-        orderId = builder.orderId;
+    private Paiement(Builder builder) {
+        setId(builder.paiementId);
+        commandeId = builder.commandeId;
         clientId = builder.clientId;
         price = builder.price;
-        paymentStatus = builder.paymentStatus;
+        paiementStatus = builder.paiementStatus;
         createdAt = builder.createdAt;
     }
 
@@ -55,23 +55,23 @@ public class Payment extends AggregateRoot<PaymentId> {
 
 
     public static final class Builder {
-        private PaymentId paymentId;
-        private OrderId orderId;
+        private PaiementId paiementId;
+        private CommandeId commandeId;
         private ClientId clientId;
-        private Money price;
-        private PaymentStatus paymentStatus;
+        private Monnaie price;
+        private PaiementStatus paiementStatus;
         private ZonedDateTime createdAt;
 
         private Builder() {
         }
 
-        public Builder paymentId(PaymentId val) {
-            paymentId = val;
+        public Builder paymentId(PaiementId val) {
+            paiementId = val;
             return this;
         }
 
-        public Builder orderId(OrderId val) {
-            orderId = val;
+        public Builder orderId(CommandeId val) {
+            commandeId = val;
             return this;
         }
 
@@ -80,13 +80,13 @@ public class Payment extends AggregateRoot<PaymentId> {
             return this;
         }
 
-        public Builder price(Money val) {
+        public Builder price(Monnaie val) {
             price = val;
             return this;
         }
 
-        public Builder paymentStatus(PaymentStatus val) {
-            paymentStatus = val;
+        public Builder paymentStatus(PaiementStatus val) {
+            paiementStatus = val;
             return this;
         }
 
@@ -95,8 +95,8 @@ public class Payment extends AggregateRoot<PaymentId> {
             return this;
         }
 
-        public Payment build() {
-            return new Payment(this);
+        public Paiement build() {
+            return new Paiement(this);
         }
     }
 }

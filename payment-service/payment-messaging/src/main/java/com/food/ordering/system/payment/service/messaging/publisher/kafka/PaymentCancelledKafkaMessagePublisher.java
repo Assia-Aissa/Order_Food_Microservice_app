@@ -31,7 +31,7 @@ public class PaymentCancelledKafkaMessagePublisher implements PaymentCancelledMe
 
     @Override
     public void publish(PaymentCancelledEvent domainEvent) {
-        String orderId = domainEvent.getPayment().getOrderId().getValue().toString();
+        String orderId = domainEvent.getPaiement().getOrderId().getValue().toString();
 
         log.info("Received PaymentCancelledEvent for order id: {}", orderId);
 

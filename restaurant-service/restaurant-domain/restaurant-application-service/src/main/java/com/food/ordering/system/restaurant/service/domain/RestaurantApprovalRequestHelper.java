@@ -1,6 +1,6 @@
 package com.food.ordering.system.restaurant.service.domain;
 
-import com.food.ordering.system.domain.valueobject.OrderId;
+import com.food.ordering.system.domain.valueobject.CommandeId;
 import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApprovalRequest;
 import com.food.ordering.system.restaurant.service.domain.entity.Restaurant;
 import com.food.ordering.system.restaurant.service.domain.event.OrderApprovalEvent;
@@ -56,7 +56,7 @@ public class RestaurantApprovalRequestHelper {
                         failureMessages,
                         orderApprovedMessagePublisher,
                         orderRejectedMessagePublisher);
-        orderApprovalRepository.save(restaurant.getOrderApproval());
+        orderApprovalRepository.save(restaurant.getApprobationCommande());
         return orderApprovalEvent;
     }
 
@@ -72,13 +72,13 @@ public class RestaurantApprovalRequestHelper {
 
         Restaurant restaurantEntity = restaurantResult.get();
         restaurant.setActive(restaurantEntity.isActive());
-        restaurant.getOrderDetail().getProducts().forEach(product ->
-                restaurantEntity.getOrderDetail().getProducts().forEach(p -> {
+        restaurant.getDétailsCommande().getProduits().forEach(product ->
+                restaurantEntity.getDétailsCommande().getProduits().forEach(p -> {
             if (p.getId().equals(product.getId())) {
                 product.updateWithConfirmedNamePriceAndAvailability(p.getName(), p.getPrice(), p.isAvailable());
             }
         }));
-        restaurant.getOrderDetail().setId(new OrderId(UUID.fromString(restaurantApprovalRequest.getOrderId())));
+        restaurant.getDétailsCommande().setId(new CommandeId(UUID.fromString(restaurantApprovalRequest.getOrderId())));
 
         return restaurant;
     }

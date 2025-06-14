@@ -2,7 +2,7 @@ package com.food.ordering.system.payment.service.dataaccess.payment.adapter;
 
 import com.food.ordering.system.payment.service.dataaccess.payment.mapper.PaymentDataAccessMapper;
 import com.food.ordering.system.payment.service.dataaccess.payment.repository.PaymentJpaRepository;
-import com.food.ordering.system.payment.service.domain.entity.Payment;
+import com.food.ordering.system.payment.service.domain.entity.Paiement;
 import com.food.ordering.system.payment.service.domain.ports.output.repository.PaymentRepository;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +22,14 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     }
 
     @Override
-    public Payment save(Payment payment) {
+    public Paiement save(Paiement paiement) {
         return paymentDataAccessMapper
                 .paymentEntityToPayment(paymentJpaRepository
-                        .save(paymentDataAccessMapper.paymentToPaymentEntity(payment)));
+                        .save(paymentDataAccessMapper.paymentToPaymentEntity(paiement)));
     }
 
     @Override
-    public Optional<Payment> findByOrderId(UUID orderId) {
+    public Optional<Paiement> findByOrderId(UUID orderId) {
         return paymentJpaRepository.findByOrderId(orderId)
                 .map(paymentDataAccessMapper::paymentEntityToPayment);
     }

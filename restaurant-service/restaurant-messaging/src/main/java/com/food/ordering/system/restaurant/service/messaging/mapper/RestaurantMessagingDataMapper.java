@@ -1,13 +1,13 @@
 package com.food.ordering.system.restaurant.service.messaging.mapper;
 
 
-import com.food.ordering.system.domain.valueobject.ProductId;
-import com.food.ordering.system.domain.valueobject.RestaurantOrderStatus;
+import com.food.ordering.system.domain.valueobject.ProduitId;
+import com.food.ordering.system.domain.valueobject.RestaurantCommandeStatus;
 import com.food.ordering.system.kafka.order.avro.model.OrderApprovalStatus;
 import com.food.ordering.system.kafka.order.avro.model.RestaurantApprovalRequestAvroModel;
 import com.food.ordering.system.kafka.order.avro.model.RestaurantApprovalResponseAvroModel;
 import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApprovalRequest;
-import com.food.ordering.system.restaurant.service.domain.entity.Product;
+import com.food.ordering.system.restaurant.service.domain.entity.Produit;
 import com.food.ordering.system.restaurant.service.domain.event.OrderApprovedEvent;
 import com.food.ordering.system.restaurant.service.domain.event.OrderRejectedEvent;
 import org.springframework.stereotype.Component;
@@ -22,11 +22,11 @@ public class RestaurantMessagingDataMapper {
         return RestaurantApprovalResponseAvroModel.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setSagaId("")
-                .setOrderId(orderApprovedEvent.getOrderApproval().getOrderId().getValue().toString())
+                .setOrderId(orderApprovedEvent.getApprobationCommande().getCommandeId().getValue().toString())
                 .setRestaurantId(orderApprovedEvent.getRestaurantId().getValue().toString())
                 .setCreatedAt(orderApprovedEvent.getCreatedAt().toInstant())
                 .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderApprovedEvent.
-                        getOrderApproval().getApprovalStatus().name()))
+                        getApprobationCommande().getApprovalStatus().name()))
                 .setFailureMessages(orderApprovedEvent.getFailureMessages())
                 .build();
     }
@@ -36,11 +36,11 @@ public class RestaurantMessagingDataMapper {
         return RestaurantApprovalResponseAvroModel.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setSagaId("")
-                .setOrderId(orderRejectedEvent.getOrderApproval().getOrderId().getValue().toString())
+                .setOrderId(orderRejectedEvent.getApprobationCommande().getCommandeId().getValue().toString())
                 .setRestaurantId(orderRejectedEvent.getRestaurantId().getValue().toString())
                 .setCreatedAt(orderRejectedEvent.getCreatedAt().toInstant())
                 .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderRejectedEvent.
-                        getOrderApproval().getApprovalStatus().name()))
+                        getApprobationCommande().getApprovalStatus().name()))
                 .setFailureMessages(orderRejectedEvent.getFailureMessages())
                 .build();
     }
@@ -53,12 +53,12 @@ public class RestaurantMessagingDataMapper {
                 .sagaId(restaurantApprovalRequestAvroModel.getSagaId())
                 .restaurantId(restaurantApprovalRequestAvroModel.getRestaurantId())
                 .orderId(restaurantApprovalRequestAvroModel.getOrderId())
-                .restaurantOrderStatus(RestaurantOrderStatus.valueOf(restaurantApprovalRequestAvroModel
+                .restaurantCommandeStatus(RestaurantCommandeStatus.valueOf(restaurantApprovalRequestAvroModel
                         .getRestaurantOrderStatus().name()))
-                .products(restaurantApprovalRequestAvroModel.getProducts()
+                .produits(restaurantApprovalRequestAvroModel.getProducts()
                         .stream().map(avroModel ->
-                                Product.builder()
-                                        .productId(new ProductId(UUID.fromString(avroModel.getId())))
+                                Produit.builder()
+                                        .productId(new ProduitId(UUID.fromString(avroModel.getId())))
                                         .quantity(avroModel.getQuantity())
                                         .build())
                         .collect(Collectors.toList()))

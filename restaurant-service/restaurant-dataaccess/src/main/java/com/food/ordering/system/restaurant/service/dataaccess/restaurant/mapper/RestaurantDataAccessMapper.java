@@ -2,16 +2,16 @@ package com.food.ordering.system.restaurant.service.dataaccess.restaurant.mapper
 
 import com.food.ordering.system.dataaccess.restaurant.entity.RestaurantEntity;
 import com.food.ordering.system.dataaccess.restaurant.exception.RestaurantDataAccessException;
-import com.food.ordering.system.domain.valueobject.Money;
-import com.food.ordering.system.domain.valueobject.OrderId;
-import com.food.ordering.system.domain.valueobject.ProductId;
+import com.food.ordering.system.domain.valueobject.CommandeId;
+import com.food.ordering.system.domain.valueobject.Monnaie;
+import com.food.ordering.system.domain.valueobject.ProduitId;
 import com.food.ordering.system.domain.valueobject.RestaurantId;
 import com.food.ordering.system.restaurant.service.dataaccess.restaurant.entity.OrderApprovalEntity;
-import com.food.ordering.system.restaurant.service.domain.entity.OrderApproval;
-import com.food.ordering.system.restaurant.service.domain.entity.OrderDetail;
-import com.food.ordering.system.restaurant.service.domain.entity.Product;
+import com.food.ordering.system.restaurant.service.domain.entity.ApprobationCommande;
+import com.food.ordering.system.restaurant.service.domain.entity.DétailsCommande;
+import com.food.ordering.system.restaurant.service.domain.entity.Produit;
 import com.food.ordering.system.restaurant.service.domain.entity.Restaurant;
-import com.food.ordering.system.restaurant.service.domain.valueobject.OrderApprovalId;
+import com.food.ordering.system.restaurant.service.domain.valueobject.ApprobationCommandeId;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class RestaurantDataAccessMapper {
 
     public List<UUID> restaurantToRestaurantProducts(Restaurant restaurant) {
-        return restaurant.getOrderDetail().getProducts().stream()
+        return restaurant.getDétailsCommande().getProduits().stream()
                 .map(product -> product.getId().getValue())
                 .collect(Collectors.toList());
     }
@@ -32,38 +32,38 @@ public class RestaurantDataAccessMapper {
                 restaurantEntities.stream().findFirst().orElseThrow(() ->
                         new RestaurantDataAccessException("No restaurants found!"));
 
-        List<Product> restaurantProducts = restaurantEntities.stream().map(entity ->
-                        Product.builder()
-                                .productId(new ProductId(entity.getProductId()))
+        List<Produit> restaurantProduits = restaurantEntities.stream().map(entity ->
+                        Produit.builder()
+                                .productId(new ProduitId(entity.getProductId()))
                                 .name(entity.getProductName())
-                                .price(new Money(entity.getProductPrice()))
+                                .price(new Monnaie(entity.getProductPrice()))
                                 .available(entity.getProductAvailable())
                                 .build())
                 .collect(Collectors.toList());
 
         return Restaurant.builder()
                 .restaurantId(new RestaurantId(restaurantEntity.getRestaurantId()))
-                .orderDetail(OrderDetail.builder()
-                        .products(restaurantProducts)
+                .orderDetail(DétailsCommande.builder()
+                        .products(restaurantProduits)
                         .build())
                 .active(restaurantEntity.getRestaurantActive())
                 .build();
     }
 
-    public OrderApprovalEntity orderApprovalToOrderApprovalEntity(OrderApproval orderApproval) {
+    public OrderApprovalEntity orderApprovalToOrderApprovalEntity(ApprobationCommande approbationCommande) {
         return OrderApprovalEntity.builder()
-                .id(orderApproval.getId().getValue())
-                .restaurantId(orderApproval.getRestaurantId().getValue())
-                .orderId(orderApproval.getOrderId().getValue())
-                .status(orderApproval.getApprovalStatus())
+                .id(approbationCommande.getId().getValue())
+                .restaurantId(approbationCommande.getRestaurantId().getValue())
+                .orderId(approbationCommande.getCommandeId().getValue())
+                .status(approbationCommande.getApprovalStatus())
                 .build();
     }
 
-    public OrderApproval orderApprovalEntityToOrderApproval(OrderApprovalEntity orderApprovalEntity) {
-        return OrderApproval.builder()
-                .orderApprovalId(new OrderApprovalId(orderApprovalEntity.getId()))
+    public ApprobationCommande orderApprovalEntityToOrderApproval(OrderApprovalEntity orderApprovalEntity) {
+        return ApprobationCommande.builder()
+                .orderApprovalId(new ApprobationCommandeId(orderApprovalEntity.getId()))
                 .restaurantId(new RestaurantId(orderApprovalEntity.getRestaurantId()))
-                .orderId(new OrderId(orderApprovalEntity.getOrderId()))
+                .orderId(new CommandeId(orderApprovalEntity.getOrderId()))
                 .approvalStatus(orderApprovalEntity.getStatus())
                 .build();
     }

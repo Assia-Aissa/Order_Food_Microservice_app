@@ -1,14 +1,14 @@
 package com.food.ordering.system.payment.service.domain.ports.output.repository;
 
 import com.food.ordering.system.domain.valueobject.ClientId;
-import com.food.ordering.system.payment.service.domain.entity.CreditHistory;
+import com.food.ordering.system.payment.service.domain.entity.HistoriqueCredit;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CreditHistoryRepository {
 
-    CreditHistory save(CreditHistory creditHistory);
+    HistoriqueCredit save(HistoriqueCredit historiqueCrédit);
 
-    Optional<List<CreditHistory>> findByCustomerId(ClientId clientId);
+    Optional<List<HistoriqueCredit>> findByCustomerId(ClientId clientId);
 }

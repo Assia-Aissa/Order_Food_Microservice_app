@@ -25,7 +25,7 @@
             }
         },
         {
-            "name": "orderId",
+            "name": "commandeId",
             "type": {
                 "type": "string",
                 "logicalType": "uuid"

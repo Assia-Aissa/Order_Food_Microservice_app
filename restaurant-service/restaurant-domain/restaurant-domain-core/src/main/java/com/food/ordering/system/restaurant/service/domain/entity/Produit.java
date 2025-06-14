@@ -1,25 +1,25 @@
 package com.food.ordering.system.restaurant.service.domain.entity;
 
 import com.food.ordering.system.domain.entity.BaseEntity;
-import com.food.ordering.system.domain.valueobject.Money;
-import com.food.ordering.system.domain.valueobject.ProductId;
+import com.food.ordering.system.domain.valueobject.Monnaie;
+import com.food.ordering.system.domain.valueobject.ProduitId;
 import lombok.Getter;
 
 @Getter
-public class Product extends BaseEntity<ProductId> {
+public class Produit extends BaseEntity<ProduitId> {
     private String name;
-    private Money price;
+    private Monnaie price;
     private final int quantity;
     private boolean available;
 
-    public void updateWithConfirmedNamePriceAndAvailability(String name, Money price, boolean available) {
+    public void updateWithConfirmedNamePriceAndAvailability(String name, Monnaie price, boolean available) {
         this.name = name;
         this.price = price;
         this.available = available;
     }
 
-    private Product(Builder builder) {
-        setId(builder.productId);
+    private Produit(Builder builder) {
+        setId(builder.produitId);
         name = builder.name;
         price = builder.price;
         quantity = builder.quantity;
@@ -31,17 +31,17 @@ public class Product extends BaseEntity<ProductId> {
     }
 
     public static final class Builder {
-        private ProductId productId;
+        private ProduitId produitId;
         private String name;
-        private Money price;
+        private Monnaie price;
         private int quantity;
         private boolean available;
 
         private Builder() {
         }
 
-        public Builder productId(ProductId val) {
-            productId = val;
+        public Builder productId(ProduitId val) {
+            produitId = val;
             return this;
         }
 
@@ -50,7 +50,7 @@ public class Product extends BaseEntity<ProductId> {
             return this;
         }
 
-        public Builder price(Money val) {
+        public Builder price(Monnaie val) {
             price = val;
             return this;
         }
@@ -65,8 +65,8 @@ public class Product extends BaseEntity<ProductId> {
             return this;
         }
 
-        public Product build() {
-            return new Product(this);
+        public Produit build() {
+            return new Produit(this);
         }
     }
 }

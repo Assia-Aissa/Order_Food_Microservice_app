@@ -31,7 +31,7 @@ public class PaymentCompletedKafkaMessagePublisher implements PaymentCompletedMe
 
     @Override
     public void publish(PaymentCompletedEvent domainEvent) {
-        String orderId = domainEvent.getPayment().getOrderId().getValue().toString();
+        String orderId = domainEvent.getPaiement().getOrderId().getValue().toString();
 
         log.info("Received PaymentCompletedEvent for order id: {}", orderId);
 

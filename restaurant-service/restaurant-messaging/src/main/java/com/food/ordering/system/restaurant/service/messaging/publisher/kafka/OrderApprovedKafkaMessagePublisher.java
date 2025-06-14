@@ -31,7 +31,7 @@ public class OrderApprovedKafkaMessagePublisher implements OrderApprovedMessageP
 
     @Override
     public void publish(OrderApprovedEvent orderApprovedEvent) {
-        String orderId = orderApprovedEvent.getOrderApproval().getOrderId().getValue().toString();
+        String orderId = orderApprovedEvent.getApprobationCommande().getCommandeId().getValue().toString();
 
         log.info("Received OrderApprovedEvent for order id: {}", orderId);
 

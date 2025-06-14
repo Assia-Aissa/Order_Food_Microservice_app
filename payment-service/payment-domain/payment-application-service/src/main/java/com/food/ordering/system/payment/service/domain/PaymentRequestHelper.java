@@ -3,9 +3,9 @@ package com.food.ordering.system.payment.service.domain;
 
 import com.food.ordering.system.domain.valueobject.ClientId;
 import com.food.ordering.system.payment.service.domain.dto.PaymentRequest;
-import com.food.ordering.system.payment.service.domain.entity.CreditEntry;
-import com.food.ordering.system.payment.service.domain.entity.CreditHistory;
-import com.food.ordering.system.payment.service.domain.entity.Payment;
+import com.food.ordering.system.payment.service.domain.entity.EntreeCredit;
+import com.food.ordering.system.payment.service.domain.entity.HistoriqueCredit;
+import com.food.ordering.system.payment.service.domain.entity.Paiement;
 import com.food.ordering.system.payment.service.domain.event.PaymentEvent;
 import com.food.ordering.system.payment.service.domain.exception.PaymentApplicationServiceException;
 import com.food.ordering.system.payment.service.domain.mapper.PaymentDataMapper;
@@ -58,41 +58,41 @@ public class PaymentRequestHelper {
 
     @Transactional
     public PaymentEvent persistPayment(PaymentRequest paymentRequest) {
-        log.info("Received payment complete event for order id: {}", paymentRequest.getOrderId());
-        Payment payment = paymentDataMapper.paymentRequestModelToPayment(paymentRequest);
-        CreditEntry creditEntry = getCreditEntry(payment.getClientId());
-        List<CreditHistory> creditHistories = getCreditHistory(payment.getClientId());
+        log.info("Received paiement complete event for order id: {}", paymentRequest.getOrderId());
+        Paiement paiement = paymentDataMapper.paymentRequestModelToPayment(paymentRequest);
+        EntreeCredit entréeCrédit = getCreditEntry(paiement.getClientId());
+        List<HistoriqueCredit> creditHistories = getCreditHistory(paiement.getClientId());
         List<String> failureMessages = new ArrayList<>();
         PaymentEvent paymentEvent =
-                paymentDomainService.validateAndInitiatePayment(payment, creditEntry, creditHistories, failureMessages,
+                paymentDomainService.validateAndInitiatePayment(paiement, entréeCrédit, creditHistories, failureMessages,
                         paymentCompletedEventDomainEventPublisher, paymentFailedEventDomainEventPublisher);
-        persistDbObjects(payment, creditEntry, creditHistories, failureMessages);
+        persistDbObjects(paiement, entréeCrédit, creditHistories, failureMessages);
         return paymentEvent;
     }
 
     @Transactional
     public PaymentEvent persistCancelPayment(PaymentRequest paymentRequest) {
-        log.info("Received payment rollback event for order id: {}", paymentRequest.getOrderId());
-        Optional<Payment> paymentResponse = paymentRepository
+        log.info("Received paiement rollback event for order id: {}", paymentRequest.getOrderId());
+        Optional<Paiement> paymentResponse = paymentRepository
                 .findByOrderId(UUID.fromString(paymentRequest.getOrderId()));
         if (paymentResponse.isEmpty()) {
-            log.error("Payment with order id: {} could not be found!", paymentRequest.getOrderId());
-            throw new PaymentApplicationServiceException("Payment with order id: " +
+            log.error("Paiement with order id: {} could not be found!", paymentRequest.getOrderId());
+            throw new PaymentApplicationServiceException("Paiement with order id: " +
                     paymentRequest.getOrderId() + " could not be found!");
         }
-        Payment payment = paymentResponse.get();
-        CreditEntry creditEntry = getCreditEntry(payment.getClientId());
-        List<CreditHistory> creditHistories = getCreditHistory(payment.getClientId());
+        Paiement paiement = paymentResponse.get();
+        EntreeCredit entréeCrédit = getCreditEntry(paiement.getClientId());
+        List<HistoriqueCredit> creditHistories = getCreditHistory(paiement.getClientId());
         List<String> failureMessages = new ArrayList<>();
         PaymentEvent paymentEvent = paymentDomainService
-                .validateAndCancelPayment(payment, creditEntry, creditHistories, failureMessages,
+                .validateAndCancelPayment(paiement, entréeCrédit, creditHistories, failureMessages,
                         paymentCancelledEventDomainEventPublisher, paymentFailedEventDomainEventPublisher);
-        persistDbObjects(payment, creditEntry, creditHistories, failureMessages);
+        persistDbObjects(paiement, entréeCrédit, creditHistories, failureMessages);
         return paymentEvent;
     }
 
-    private CreditEntry getCreditEntry(ClientId clientId) {
-        Optional<CreditEntry> creditEntry = creditEntryRepository.findByCustomerId(clientId);
+    private EntreeCredit getCreditEntry(ClientId clientId) {
+        Optional<EntreeCredit> creditEntry = creditEntryRepository.findByCustomerId(clientId);
         if (creditEntry.isEmpty()) {
             log.error("Could not find credit entry for customer: {}", clientId.getValue());
             throw new PaymentApplicationServiceException("Could not find credit entry for customer: " +
@@ -101,8 +101,8 @@ public class PaymentRequestHelper {
         return creditEntry.get();
     }
 
-    private List<CreditHistory> getCreditHistory(ClientId clientId) {
-        Optional<List<CreditHistory>> creditHistories = creditHistoryRepository.findByCustomerId(clientId);
+    private List<HistoriqueCredit> getCreditHistory(ClientId clientId) {
+        Optional<List<HistoriqueCredit>> creditHistories = creditHistoryRepository.findByCustomerId(clientId);
         if (creditHistories.isEmpty()) {
             log.error("Could not find credit history for customer: {}", clientId.getValue());
             throw new PaymentApplicationServiceException("Could not find credit history for customer: " +
@@ -111,13 +111,13 @@ public class PaymentRequestHelper {
         return creditHistories.get();
     }
 
-    private void persistDbObjects(Payment payment,
-                                  CreditEntry creditEntry,
-                                  List<CreditHistory> creditHistories,
+    private void persistDbObjects(Paiement paiement,
+                                  EntreeCredit entréeCrédit,
+                                  List<HistoriqueCredit> creditHistories,
                                   List<String> failureMessages) {
-        paymentRepository.save(payment);
+        paymentRepository.save(paiement);
         if (failureMessages.isEmpty()) {
-            creditEntryRepository.save(creditEntry);
+            creditEntryRepository.save(entréeCrédit);
             creditHistoryRepository.save(creditHistories.get(creditHistories.size() - 1));
         }
     }

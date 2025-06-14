@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class Commande extends AggregateRoot<OrderId> {
+public class Commande extends AggregateRoot<CommandeId> {
     private final ClientId clientId;
     private final RestaurantId restaurantId;
     private final Adresse deliveryAddress;
-    private final Money price;
+    private final Monnaie price;
     private final List<Article> items;
 
     private NumeroSuivi numeroSuivi;
-    private OrderStatus orderStatus;
+    private CommandeStatus commandeStatus;
     private List<String> failureMessages;
 
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
@@ -31,9 +31,9 @@ public class Commande extends AggregateRoot<OrderId> {
      * Also initializes the order items.
      */
     public void initializeOrder() {
-        setId(new OrderId(UUID.randomUUID()));
+        setId(new CommandeId(UUID.randomUUID()));
         numeroSuivi = new NumeroSuivi(UUID.randomUUID());
-        orderStatus = OrderStatus.PENDING;
+        commandeStatus = CommandeStatus.PENDING;
         initializeOrderItems();
     }
 
@@ -52,10 +52,10 @@ public class Commande extends AggregateRoot<OrderId> {
      * @throws OrderDomainException if the order is not in the correct state for the pay operation
      */
     public void pay() {
-        if (orderStatus != OrderStatus.PENDING) {
+        if (commandeStatus != CommandeStatus.PENDING) {
             throw new OrderDomainException("Commande is not in correct state for pay operation!");
         }
-        orderStatus = OrderStatus.PAID;
+        commandeStatus = CommandeStatus.PAID;
     }
 
     /**
@@ -64,10 +64,10 @@ public class Commande extends AggregateRoot<OrderId> {
      * @throws OrderDomainException if the order is not in the correct state for the approval operation
      */
     public void approve() {
-        if(orderStatus != OrderStatus.PAID) {
+        if(commandeStatus != CommandeStatus.PAID) {
             throw new OrderDomainException("Commande is not in correct state for approve operation!");
         }
-        orderStatus = OrderStatus.APPROVED;
+        commandeStatus = CommandeStatus.APPROVED;
     }
 
     /**
@@ -77,10 +77,10 @@ public class Commande extends AggregateRoot<OrderId> {
      * @throws OrderDomainException if the order is not in the correct state for the initCancel operation
      */
     public void initCancel(List<String> failureMessages) {
-        if (orderStatus != OrderStatus.PAID) {
+        if (commandeStatus != CommandeStatus.PAID) {
             throw new OrderDomainException("Commande is not in correct state for initCancel operation!");
         }
-        orderStatus = OrderStatus.CANCELLING;
+        commandeStatus = CommandeStatus.CANCELLING;
         updateFailureMessages(failureMessages);
     }
 
@@ -91,10 +91,10 @@ public class Commande extends AggregateRoot<OrderId> {
      * @throws OrderDomainException if the order is not in the correct state for the cancel operation
      */
     public void cancel(List<String> failureMessages) {
-        if (!(orderStatus == OrderStatus.CANCELLING || orderStatus == OrderStatus.PENDING)) {
+        if (!(commandeStatus == CommandeStatus.CANCELLING || commandeStatus == CommandeStatus.PENDING)) {
             throw new OrderDomainException("Commande is not in correct state for cancel operation!");
         }
-        orderStatus = OrderStatus.CANCELLED;
+        commandeStatus = CommandeStatus.CANCELLED;
         updateFailureMessages(failureMessages);
     }
 
@@ -118,7 +118,7 @@ public class Commande extends AggregateRoot<OrderId> {
      * @throws OrderDomainException if the order is not in the correct state for initialization
      */
     private void validateInitialOrder() {
-        if (orderStatus != null || getId() != null) {
+        if (commandeStatus != null || getId() != null) {
             throw new OrderDomainException("Commande is not in correct state for initialization!");
         }
     }
@@ -140,10 +140,10 @@ public class Commande extends AggregateRoot<OrderId> {
      * @throws OrderDomainException if the total price of the items does not match the total price of the order
      */
     private void validateItemsPrice() {
-        Money orderItemsTotal = items.stream().map(article -> {
+        Monnaie orderItemsTotal = items.stream().map(article -> {
             validateItemPrice(article);
             return article.getSubTotal();
-        }).reduce(Money.ZERO, Money::add);
+        }).reduce(Monnaie.ZERO, Monnaie::add);
 
         if (!price.equals(orderItemsTotal)) {
             throw new OrderDomainException("Total price: " + price.getAmount()
@@ -175,14 +175,14 @@ public class Commande extends AggregateRoot<OrderId> {
     }
 
     private Commande(Builder builder) {
-        super.setId(builder.orderId);
+        super.setId(builder.commandeId);
         clientId = builder.clientId;
         restaurantId = builder.restaurantId;
         deliveryAddress = builder.deliveryAddress;
         price = builder.price;
         items = builder.items;
         numeroSuivi = builder.numeroSuivi;
-        orderStatus = builder.orderStatus;
+        commandeStatus = builder.commandeStatus;
         failureMessages = builder.failureMessages;
     }
 
@@ -191,21 +191,21 @@ public class Commande extends AggregateRoot<OrderId> {
     }
 
     public static final class Builder {
-        private OrderId orderId;
+        private CommandeId commandeId;
         private ClientId clientId;
         private RestaurantId restaurantId;
         private Adresse deliveryAddress;
-        private Money price;
+        private Monnaie price;
         private List<Article> items;
         private NumeroSuivi numeroSuivi;
-        private OrderStatus orderStatus;
+        private CommandeStatus commandeStatus;
         private List<String> failureMessages;
 
         private Builder() {
         }
 
-        public Builder orderId(OrderId val) {
-            orderId = val;
+        public Builder orderId(CommandeId val) {
+            commandeId = val;
             return this;
         }
 
@@ -224,7 +224,7 @@ public class Commande extends AggregateRoot<OrderId> {
             return this;
         }
 
-        public Builder price(Money val) {
+        public Builder price(Monnaie val) {
             price = val;
             return this;
         }
@@ -239,8 +239,8 @@ public class Commande extends AggregateRoot<OrderId> {
             return this;
         }
 
-        public Builder orderStatus(OrderStatus val) {
-            orderStatus = val;
+        public Builder orderStatus(CommandeStatus val) {
+            commandeStatus = val;
             return this;
         }
 

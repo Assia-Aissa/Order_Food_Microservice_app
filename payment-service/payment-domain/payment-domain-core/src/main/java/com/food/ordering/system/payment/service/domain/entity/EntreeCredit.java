@@ -2,26 +2,26 @@ package com.food.ordering.system.payment.service.domain.entity;
 
 import com.food.ordering.system.domain.entity.BaseEntity;
 import com.food.ordering.system.domain.valueobject.ClientId;
-import com.food.ordering.system.domain.valueobject.Money;
-import com.food.ordering.system.payment.service.domain.valueObject.CreditEntryId;
+import com.food.ordering.system.domain.valueobject.Monnaie;
+import com.food.ordering.system.payment.service.domain.valueObject.EntreeCreditId;
 import lombok.Getter;
 
 @Getter
-public class CreditEntry extends BaseEntity<CreditEntryId> {
+public class EntreeCredit extends BaseEntity<EntreeCreditId> {
 
     private final ClientId clientId;
-    private Money totalCreditAmount;
+    private Monnaie totalCreditAmount;
 
-    public void addCreditAmount(Money amount) {
+    public void addCreditAmount(Monnaie amount) {
         totalCreditAmount = totalCreditAmount.add(amount);
     }
 
-    public void subtractCreditAmount(Money amount) {
+    public void subtractCreditAmount(Monnaie amount) {
         totalCreditAmount = totalCreditAmount.subtract(amount);
     }
 
-    private CreditEntry(Builder builder) {
-        setId(builder.creditEntryId);
+    private EntreeCredit(Builder builder) {
+        setId(builder.entreeCreditId);
         clientId = builder.clientId;
         totalCreditAmount = builder.totalCreditAmount;
     }
@@ -32,15 +32,15 @@ public class CreditEntry extends BaseEntity<CreditEntryId> {
 
 
     public static final class Builder {
-        private CreditEntryId creditEntryId;
+        private EntreeCreditId entreeCreditId;
         private ClientId clientId;
-        private Money totalCreditAmount;
+        private Monnaie totalCreditAmount;
 
         private Builder() {
         }
 
-        public Builder creditEntryId(CreditEntryId val) {
-            creditEntryId = val;
+        public Builder creditEntryId(EntreeCreditId val) {
+            entreeCreditId = val;
             return this;
         }
 
@@ -49,13 +49,13 @@ public class CreditEntry extends BaseEntity<CreditEntryId> {
             return this;
         }
 
-        public Builder totalCreditAmount(Money val) {
+        public Builder totalCreditAmount(Monnaie val) {
             totalCreditAmount = val;
             return this;
         }
 
-        public CreditEntry build() {
-            return new CreditEntry(this);
+        public EntreeCredit build() {
+            return new EntreeCredit(this);
         }
     }
 }

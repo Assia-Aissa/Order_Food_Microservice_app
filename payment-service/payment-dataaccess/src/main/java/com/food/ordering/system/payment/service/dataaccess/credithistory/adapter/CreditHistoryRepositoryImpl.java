@@ -4,7 +4,7 @@ import com.food.ordering.system.domain.valueobject.ClientId;
 import com.food.ordering.system.payment.service.dataaccess.credithistory.entity.CreditHistoryEntity;
 import com.food.ordering.system.payment.service.dataaccess.credithistory.mapper.CreditHistoryDataAccessMapper;
 import com.food.ordering.system.payment.service.dataaccess.credithistory.repository.CreditHistoryJpaRepository;
-import com.food.ordering.system.payment.service.domain.entity.CreditHistory;
+import com.food.ordering.system.payment.service.domain.entity.HistoriqueCredit;
 import com.food.ordering.system.payment.service.domain.ports.output.repository.CreditHistoryRepository;
 import org.springframework.stereotype.Component;
 
@@ -25,13 +25,13 @@ public class CreditHistoryRepositoryImpl implements CreditHistoryRepository {
     }
 
     @Override
-    public CreditHistory save(CreditHistory creditHistory) {
+    public HistoriqueCredit save(HistoriqueCredit historiqueCrédit) {
         return creditHistoryDataAccessMapper.creditHistoryEntityToCreditHistory(creditHistoryJpaRepository
-                .save(creditHistoryDataAccessMapper.creditHistoryToCreditHistoryEntity(creditHistory)));
+                .save(creditHistoryDataAccessMapper.creditHistoryToCreditHistoryEntity(historiqueCrédit)));
     }
 
     @Override
-    public Optional<List<CreditHistory>> findByCustomerId(ClientId clientId) {
+    public Optional<List<HistoriqueCredit>> findByCustomerId(ClientId clientId) {
         Optional<List<CreditHistoryEntity>> creditHistory =
                 creditHistoryJpaRepository.findByCustomerId(clientId.getValue());
         return creditHistory

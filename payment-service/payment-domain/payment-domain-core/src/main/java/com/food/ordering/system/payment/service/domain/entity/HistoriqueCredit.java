@@ -2,20 +2,20 @@ package com.food.ordering.system.payment.service.domain.entity;
 
 import com.food.ordering.system.domain.entity.BaseEntity;
 import com.food.ordering.system.domain.valueobject.ClientId;
-import com.food.ordering.system.domain.valueobject.Money;
-import com.food.ordering.system.payment.service.domain.valueObject.CreditHistoryId;
+import com.food.ordering.system.domain.valueobject.Monnaie;
+import com.food.ordering.system.payment.service.domain.valueObject.HistoriqueCreditId;
 import com.food.ordering.system.payment.service.domain.valueObject.TransactionType;
 import lombok.Getter;
 
 @Getter
-public class CreditHistory extends BaseEntity<CreditHistoryId> {
+public class HistoriqueCredit extends BaseEntity<HistoriqueCreditId> {
 
     private final ClientId clientId;
-    private final Money amount;
+    private final Monnaie amount;
     private final TransactionType transactionType;
 
-    private CreditHistory(Builder builder) {
-        setId(builder.creditHistoryId);
+    private HistoriqueCredit(Builder builder) {
+        setId(builder.historiqueCreditId);
         clientId = builder.clientId;
         amount = builder.amount;
         transactionType = builder.transactionType;
@@ -27,16 +27,16 @@ public class CreditHistory extends BaseEntity<CreditHistoryId> {
 
 
     public static final class Builder {
-        private CreditHistoryId creditHistoryId;
+        private HistoriqueCreditId historiqueCreditId;
         private ClientId clientId;
-        private Money amount;
+        private Monnaie amount;
         private TransactionType transactionType;
 
         private Builder() {
         }
 
-        public Builder creditHistoryId(CreditHistoryId val) {
-            creditHistoryId = val;
+        public Builder creditHistoryId(HistoriqueCreditId val) {
+            historiqueCreditId = val;
             return this;
         }
 
@@ -45,7 +45,7 @@ public class CreditHistory extends BaseEntity<CreditHistoryId> {
             return this;
         }
 
-        public Builder amount(Money val) {
+        public Builder amount(Monnaie val) {
             amount = val;
             return this;
         }
@@ -55,8 +55,8 @@ public class CreditHistory extends BaseEntity<CreditHistoryId> {
             return this;
         }
 
-        public CreditHistory build() {
-            return new CreditHistory(this);
+        public HistoriqueCredit build() {
+            return new HistoriqueCredit(this);
         }
     }
 }

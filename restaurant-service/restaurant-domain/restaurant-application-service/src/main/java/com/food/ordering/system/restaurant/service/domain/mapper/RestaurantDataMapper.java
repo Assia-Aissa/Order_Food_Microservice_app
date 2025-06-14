@@ -1,12 +1,12 @@
 package com.food.ordering.system.restaurant.service.domain.mapper;
 
-import com.food.ordering.system.domain.valueobject.Money;
-import com.food.ordering.system.domain.valueobject.OrderId;
-import com.food.ordering.system.domain.valueobject.OrderStatus;
+import com.food.ordering.system.domain.valueobject.CommandeId;
+import com.food.ordering.system.domain.valueobject.Monnaie;
+import com.food.ordering.system.domain.valueobject.CommandeStatus;
 import com.food.ordering.system.domain.valueobject.RestaurantId;
 import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApprovalRequest;
-import com.food.ordering.system.restaurant.service.domain.entity.OrderDetail;
-import com.food.ordering.system.restaurant.service.domain.entity.Product;
+import com.food.ordering.system.restaurant.service.domain.entity.DétailsCommande;
+import com.food.ordering.system.restaurant.service.domain.entity.Produit;
 import com.food.ordering.system.restaurant.service.domain.entity.Restaurant;
 import org.springframework.stereotype.Component;
 
@@ -19,16 +19,16 @@ public class RestaurantDataMapper {
                                                                              restaurantApprovalRequest) {
         return Restaurant.builder()
                 .restaurantId(new RestaurantId(UUID.fromString(restaurantApprovalRequest.getRestaurantId())))
-                .orderDetail(OrderDetail.builder()
-                        .orderId(new OrderId(UUID.fromString(restaurantApprovalRequest.getOrderId())))
-                        .products(restaurantApprovalRequest.getProducts().stream().map(
-                                product -> Product.builder()
+                .orderDetail(DétailsCommande.builder()
+                        .orderId(new CommandeId(UUID.fromString(restaurantApprovalRequest.getOrderId())))
+                        .products(restaurantApprovalRequest.getProduits().stream().map(
+                                product -> Produit.builder()
                                         .productId(product.getId())
                                         .quantity(product.getQuantity())
                                         .build())
                                 .collect(Collectors.toList()))
-                        .totalAmount(new Money(restaurantApprovalRequest.getPrice()))
-                        .orderStatus(OrderStatus.valueOf(restaurantApprovalRequest.getRestaurantOrderStatus().name()))
+                        .totalAmount(new Monnaie(restaurantApprovalRequest.getPrice()))
+                        .orderStatus(CommandeStatus.valueOf(restaurantApprovalRequest.getRestaurantCommandeStatus().name()))
                         .build())
                 .build();
     }

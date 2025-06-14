@@ -31,7 +31,7 @@ public class OrderRejectedKafkaMessagePublisher implements OrderRejectedMessageP
 
     @Override
     public void publish(OrderRejectedEvent orderRejectedEvent) {
-        String orderId = orderRejectedEvent.getOrderApproval().getOrderId().getValue().toString();
+        String orderId = orderRejectedEvent.getApprobationCommande().getCommandeId().getValue().toString();
 
         log.info("Received OrderRejectedEvent for order id: {}", orderId);
 

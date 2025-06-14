@@ -1,21 +1,21 @@
 package com.food.ordering.system.order.service.domain.entity;
 
 import com.food.ordering.system.domain.entity.BaseEntity;
-import com.food.ordering.system.domain.valueobject.Money;
-import com.food.ordering.system.domain.valueobject.OrderId;
+import com.food.ordering.system.domain.valueobject.CommandeId;
+import com.food.ordering.system.domain.valueobject.Monnaie;
 import com.food.ordering.system.order.service.domain.valueobject.ArticleId;
 import lombok.Getter;
 
 @Getter
 public class Article extends BaseEntity<ArticleId> {
-    private OrderId orderId;
+    private CommandeId commandeId;
     private final Produit produit;
     private final int quantity;
-    private final Money price;
-    private final Money subTotal;
+    private final Monnaie price;
+    private final Monnaie subTotal;
 
-    void initializeOrderItem(OrderId orderId, ArticleId articleId) {
-        this.orderId = orderId;
+    void initializeOrderItem(CommandeId commandeId, ArticleId articleId) {
+        this.commandeId = commandeId;
         super.setId(articleId);
     }
 
@@ -42,8 +42,8 @@ public class Article extends BaseEntity<ArticleId> {
         private ArticleId articleId;
         private Produit produit;
         private int quantity;
-        private Money price;
-        private Money subTotal;
+        private Monnaie price;
+        private Monnaie subTotal;
 
         private Builder() {
         }
@@ -63,12 +63,12 @@ public class Article extends BaseEntity<ArticleId> {
             return this;
         }
 
-        public Builder price(Money val) {
+        public Builder price(Monnaie val) {
             price = val;
             return this;
         }
 
-        public Builder subTotal(Money val) {
+        public Builder subTotal(Monnaie val) {
             subTotal = val;
             return this;
         }

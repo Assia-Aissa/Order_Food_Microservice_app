@@ -1,13 +1,13 @@
 package com.food.ordering.system.payment.service.domain.ports.output.repository;
 
-import com.food.ordering.system.payment.service.domain.entity.Payment;
+import com.food.ordering.system.payment.service.domain.entity.Paiement;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface PaymentRepository {
 
-    Payment save(Payment payment);
+    Paiement save(Paiement paiement);
 
-    Optional<Payment> findByOrderId(UUID orderId);
+    Optional<Paiement> findByOrderId(UUID orderId);
 }

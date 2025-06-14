@@ -31,7 +31,7 @@ public class PaymentFailedKafkaMessagePublisher implements PaymentFailedMessageP
 
     @Override
     public void publish(PaymentFailedEvent domainEvent) {
-        String orderId = domainEvent.getPayment().getOrderId().getValue().toString();
+        String orderId = domainEvent.getPaiement().getOrderId().getValue().toString();
 
         log.info("Received PaymentFailedEvent for order id: {}", orderId);
 

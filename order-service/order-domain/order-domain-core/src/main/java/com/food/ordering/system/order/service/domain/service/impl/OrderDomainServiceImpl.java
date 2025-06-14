@@ -1,8 +1,8 @@
 package com.food.ordering.system.order.service.domain.service.impl;
 
 import com.food.ordering.system.domain.event.publisher.DomainEventPublisher;
-import com.food.ordering.system.order.service.domain.entity.Order;
-import com.food.ordering.system.order.service.domain.entity.Product;
+import com.food.ordering.system.order.service.domain.entity.Commande;
+import com.food.ordering.system.order.service.domain.entity.Produit;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.event.OrderCancelledEvent;
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
@@ -22,76 +22,76 @@ public class OrderDomainServiceImpl implements OrderDomainService {
 
 
     /**
-     * Validates the restaurant and initiates the order.
+     * Validates the restaurant and initiates the commande.
      *
-     * @param order the order to be validated and initiated
+     * @param commande the commande to be validated and initiated
      * @param restaurant the restaurant to validate against
-     * @return an event indicating the order has been created
+     * @return an event indicating the commande has been created
      */
     @Override
-    public OrderCreatedEvent validateAndInitiateOrder(Order order, Restaurant restaurant,
+    public OrderCreatedEvent validateAndInitiateOrder(Commande commande, Restaurant restaurant,
                                                       DomainEventPublisher<OrderCreatedEvent>
                                                               orderCreatedEventDomainEventPublisher) {
         validateRestaurant(restaurant);
-        setOrderProductInformation(order, restaurant);
-        order.validateOrder();
-        order.initializeOrder();
-        log.info("Order with id: {} is initiated", order.getId().getValue());
-        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderCreatedEventDomainEventPublisher);
+        setOrderProductInformation(commande, restaurant);
+        commande.validateOrder();
+        commande.initializeOrder();
+        log.info("Commande with id: {} is initiated", commande.getId().getValue());
+        return new OrderCreatedEvent(commande, ZonedDateTime.now(ZoneId.of(UTC)), orderCreatedEventDomainEventPublisher);
     }
 
     /**
-     * Marks the order as paid.
+     * Marks the commande as paid.
      *
-     * @param order the order to be marked as paid
-     * @return an event indicating the order has been paid
+     * @param commande the commande to be marked as paid
+     * @return an event indicating the commande has been paid
      */
     @Override
-    public OrderPaidEvent payOrder(Order order,
+    public OrderPaidEvent payOrder(Commande commande,
                                    DomainEventPublisher<OrderPaidEvent> orderPaidEventDomainEventPublisher) {
-        order.pay();
-        log.info("Order with id: {} is paid", order.getId().getValue());
-        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderPaidEventDomainEventPublisher);
+        commande.pay();
+        log.info("Commande with id: {} is paid", commande.getId().getValue());
+        return new OrderPaidEvent(commande, ZonedDateTime.now(ZoneId.of(UTC)), orderPaidEventDomainEventPublisher);
     }
 
     /**
-     * Approves the order.
+     * Approves the commande.
      *
-     * @param order the order to be approved
+     * @param commande the commande to be approved
      */
     @Override
-    public void approveOrder(Order order) {
-        order.approve();
-        log.info("Order with id: {} is approved", order.getId().getValue());
+    public void approveOrder(Commande commande) {
+        commande.approve();
+        log.info("Commande with id: {} is approved", commande.getId().getValue());
     }
 
     /**
-     * Cancels the order payment.
+     * Cancels the commande payment.
      *
-     * @param order the order for which the payment is to be cancelled
+     * @param commande the commande for which the payment is to be cancelled
      * @param failureMessages the list of failure messages
-     * @return an event indicating the order payment has been cancelled
+     * @return an event indicating the commande payment has been cancelled
      */
     @Override
-    public OrderCancelledEvent cancelOrderPayment(Order order, List<String> failureMessages,
+    public OrderCancelledEvent cancelOrderPayment(Commande commande, List<String> failureMessages,
                                                   DomainEventPublisher<OrderCancelledEvent>
                                                           orderCancelledEventDomainEventPublisher) {
-        order.initCancel(failureMessages);
-        log.info("Order payment is cancelling for order id: {}", order.getId().getValue());
-        return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)),
+        commande.initCancel(failureMessages);
+        log.info("Commande payment is cancelling for commande id: {}", commande.getId().getValue());
+        return new OrderCancelledEvent(commande, ZonedDateTime.now(ZoneId.of(UTC)),
                 orderCancelledEventDomainEventPublisher);
     }
 
     /**
-     * Cancels the order.
+     * Cancels the commande.
      *
-     * @param order the order to be cancelled
+     * @param commande the commande to be cancelled
      * @param failureMessages the list of failure messages
      */
     @Override
-    public void cancelOrder(Order order, List<String> failureMessages) {
-        order.cancel(failureMessages);
-        log.info("Order with id: {} is cancelled", order.getId().getValue());
+    public void cancelOrder(Commande commande, List<String> failureMessages) {
+        commande.cancel(failureMessages);
+        log.info("Commande with id: {} is cancelled", commande.getId().getValue());
     }
 
     /**
@@ -108,20 +108,20 @@ public class OrderDomainServiceImpl implements OrderDomainService {
     }
 
     /**
-     * Sets the product information for the order based on the restaurant's products.
+     * Sets the product information for the commande based on the restaurant's products.
      * <p>
-     * This method iterates over each item in the order and matches it with the corresponding
+     * This method iterates over each item in the commande and matches it with the corresponding
      * product in the restaurant. If a match is found, it updates the product information
-     * in the order with the confirmed name and price from the restaurant.
+     * in the commande with the confirmed name and price from the restaurant.
      *
-     * @param order the order containing the items to be updated
+     * @param commande the commande containing the items to be updated
      * @param restaurant the restaurant containing the products to match against
      */
-    private void setOrderProductInformation(Order order, Restaurant restaurant) {
-        order.getItems().forEach(orderItem -> restaurant.getProducts().forEach(restaurantProduct -> {
-            Product currentProduct = orderItem.getProduct();
-            if (currentProduct.equals(restaurantProduct)) {
-                currentProduct.updateWithConfirmedNameAndPrice(restaurantProduct.getName(),
+    private void setOrderProductInformation(Commande commande, Restaurant restaurant) {
+        commande.getItems().forEach(orderItem -> restaurant.getProducts().forEach(restaurantProduct -> {
+            Produit currentProduit = orderItem.getProduit();
+            if (currentProduit.equals(restaurantProduct)) {
+                currentProduit.updateWithConfirmedNameAndPrice(restaurantProduct.getName(),
                         restaurantProduct.getPrice());
             }
         }));

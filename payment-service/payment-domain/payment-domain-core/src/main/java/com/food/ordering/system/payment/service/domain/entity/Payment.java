@@ -1,7 +1,7 @@
 package com.food.ordering.system.payment.service.domain.entity;
 
 import com.food.ordering.system.domain.entity.AggregateRoot;
-import com.food.ordering.system.domain.valueobject.CustomerId;
+import com.food.ordering.system.domain.valueobject.ClientId;
 import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.domain.valueobject.OrderId;
 import com.food.ordering.system.domain.valueobject.PaymentStatus;
@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Payment extends AggregateRoot<PaymentId> {
 
     private final OrderId orderId;
-    private final CustomerId customerId;
+    private final ClientId clientId;
     private final Money price;
 
     private PaymentStatus paymentStatus;
@@ -43,7 +43,7 @@ public class Payment extends AggregateRoot<PaymentId> {
     private Payment(Builder builder) {
         setId(builder.paymentId);
         orderId = builder.orderId;
-        customerId = builder.customerId;
+        clientId = builder.clientId;
         price = builder.price;
         paymentStatus = builder.paymentStatus;
         createdAt = builder.createdAt;
@@ -57,7 +57,7 @@ public class Payment extends AggregateRoot<PaymentId> {
     public static final class Builder {
         private PaymentId paymentId;
         private OrderId orderId;
-        private CustomerId customerId;
+        private ClientId clientId;
         private Money price;
         private PaymentStatus paymentStatus;
         private ZonedDateTime createdAt;
@@ -75,8 +75,8 @@ public class Payment extends AggregateRoot<PaymentId> {
             return this;
         }
 
-        public Builder customerId(CustomerId val) {
-            customerId = val;
+        public Builder customerId(ClientId val) {
+            clientId = val;
             return this;
         }
 

@@ -5,9 +5,9 @@ import com.food.ordering.system.order.service.domain.dto.create.CreateOrderComma
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.order.service.domain.dto.create.OrderAddress;
 import com.food.ordering.system.order.service.domain.dto.track.TrackOrderResponse;
-import com.food.ordering.system.order.service.domain.entity.Order;
-import com.food.ordering.system.order.service.domain.entity.OrderItem;
-import com.food.ordering.system.order.service.domain.entity.Product;
+import com.food.ordering.system.order.service.domain.entity.Commande;
+import com.food.ordering.system.order.service.domain.entity.Article;
+import com.food.ordering.system.order.service.domain.entity.Produit;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.valueobject.StreetAddress;
 import org.springframework.stereotype.Component;
@@ -23,14 +23,14 @@ public class OrderDataMapper {
         return Restaurant.builder()
                 .restaurantId(new RestaurantId(createOrderCommand.getRestaurantId()))
                 .products(createOrderCommand.getItems().stream().map(orderItem ->
-                        new Product(new ProductId(orderItem.getProductId())))
+                        new Produit(new ProductId(orderItem.getProductId())))
                         .collect(Collectors.toList()))
                 .build();
     }
     
-    public Order createOrderCommandToOrder(CreateOrderCommand createOrderCommand) {
-        return Order.builder()
-                .customerId(new CustomerId(createOrderCommand.getCustomerId()))
+    public Commande createOrderCommandToOrder(CreateOrderCommand createOrderCommand) {
+        return Commande.builder()
+                .customerId(new ClientId(createOrderCommand.getCustomerId()))
                 .restaurantId(new RestaurantId(createOrderCommand.getRestaurantId()))
                 .deliveryAddress(orderAddressToStreetAddress(createOrderCommand.getAddress()))
                 .price(new Money(createOrderCommand.getPrice()))
@@ -38,28 +38,28 @@ public class OrderDataMapper {
                 .build();
     }
 
-    public CreateOrderResponse orderToCreateOrderResponse(Order order, String message) {
+    public CreateOrderResponse orderToCreateOrderResponse(Commande commande, String message) {
         return CreateOrderResponse.builder()
-                .orderTrackingId(order.getTrackingId().getValue())
-                .orderStatus(order.getOrderStatus())
+                .orderTrackingId(commande.getTrackingId().getValue())
+                .orderStatus(commande.getOrderStatus())
                 .message(message)
                 .build();
     }
 
-    public TrackOrderResponse orderToTrackOrderResponse(Order order) {
+    public TrackOrderResponse orderToTrackOrderResponse(Commande commande) {
         return TrackOrderResponse.builder()
-                .orderTrackingId(order.getTrackingId().getValue())
-                .orderStatus(order.getOrderStatus())
-                .failureMessages(order.getFailureMessages())
+                .orderTrackingId(commande.getTrackingId().getValue())
+                .orderStatus(commande.getOrderStatus())
+                .failureMessages(commande.getFailureMessages())
                 .build();
     }
 
-    private List<OrderItem> orderItemsToOrderItemEntities(
+    private List<Article> orderItemsToOrderItemEntities(
             List<com.food.ordering.system.order.service.domain.dto.create.OrderItem> orderItems) {
         return orderItems.stream()
                 .map(orderItem ->
-                        OrderItem.builder()
-                                .product(new Product(new ProductId(orderItem.getProductId())))
+                        Article.builder()
+                                .product(new Produit(new ProductId(orderItem.getProductId())))
                                 .price(new Money(orderItem.getPrice()))
                                 .quantity(orderItem.getQuantity())
                                 .subTotal(new Money(orderItem.getSubTotal()))

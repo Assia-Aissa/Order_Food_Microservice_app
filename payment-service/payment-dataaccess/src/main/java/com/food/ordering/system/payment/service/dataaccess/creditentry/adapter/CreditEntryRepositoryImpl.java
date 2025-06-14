@@ -1,6 +1,6 @@
 package com.food.ordering.system.payment.service.dataaccess.creditentry.adapter;
 
-import com.food.ordering.system.domain.valueobject.CustomerId;
+import com.food.ordering.system.domain.valueobject.ClientId;
 import com.food.ordering.system.payment.service.dataaccess.creditentry.mapper.CreditEntryDataAccessMapper;
 import com.food.ordering.system.payment.service.dataaccess.creditentry.repository.CreditEntryJpaRepository;
 import com.food.ordering.system.payment.service.domain.entity.CreditEntry;
@@ -29,9 +29,9 @@ public class CreditEntryRepositoryImpl implements CreditEntryRepository {
     }
 
     @Override
-    public Optional<CreditEntry> findByCustomerId(CustomerId customerId) {
+    public Optional<CreditEntry> findByCustomerId(ClientId clientId) {
         return creditEntryJpaRepository
-                .findByCustomerId(customerId.getValue())
+                .findByCustomerId(clientId.getValue())
                 .map(creditEntryDataAccessMapper::creditEntryEntityToCreditEntry);
     }
 }

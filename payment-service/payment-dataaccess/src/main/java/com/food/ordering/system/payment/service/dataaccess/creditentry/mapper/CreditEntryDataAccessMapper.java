@@ -1,6 +1,6 @@
 package com.food.ordering.system.payment.service.dataaccess.creditentry.mapper;
 
-import com.food.ordering.system.domain.valueobject.CustomerId;
+import com.food.ordering.system.domain.valueobject.ClientId;
 import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.payment.service.dataaccess.creditentry.entity.CreditEntryEntity;
 import com.food.ordering.system.payment.service.domain.entity.CreditEntry;
@@ -13,7 +13,7 @@ public class CreditEntryDataAccessMapper {
     public CreditEntry creditEntryEntityToCreditEntry(CreditEntryEntity creditEntryEntity) {
         return CreditEntry.builder()
                 .creditEntryId(new CreditEntryId(creditEntryEntity.getId()))
-                .customerId(new CustomerId(creditEntryEntity.getCustomerId()))
+                .customerId(new ClientId(creditEntryEntity.getCustomerId()))
                 .totalCreditAmount(new Money(creditEntryEntity.getTotalCreditAmount()))
                 .build();
     }
@@ -21,7 +21,7 @@ public class CreditEntryDataAccessMapper {
     public CreditEntryEntity creditEntryToCreditEntryEntity(CreditEntry creditEntry) {
         return CreditEntryEntity.builder()
                 .id(creditEntry.getId().getValue())
-                .customerId(creditEntry.getCustomerId().getValue())
+                .customerId(creditEntry.getClientId().getValue())
                 .totalCreditAmount(creditEntry.getTotalCreditAmount().getAmount())
                 .build();
     }

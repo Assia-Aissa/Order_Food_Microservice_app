@@ -31,7 +31,7 @@ public class PayOrderKafkaMessagePublisher implements OrderPaidRestaurantRequest
 
     @Override
     public void publish(OrderPaidEvent domainEvent) {
-        String orderId = domainEvent.getOrder().getId().getValue().toString();
+        String orderId = domainEvent.getCommande().getId().getValue().toString();
 
         try {
             RestaurantApprovalRequestAvroModel restaurantApprovalRequestAvroModel =

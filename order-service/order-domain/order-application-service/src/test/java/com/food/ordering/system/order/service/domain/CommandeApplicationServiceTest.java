@@ -5,9 +5,9 @@ import com.food.ordering.system.order.service.domain.dto.create.CreateOrderComma
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.order.service.domain.dto.create.OrderAddress;
 import com.food.ordering.system.order.service.domain.dto.create.OrderItem;
-import com.food.ordering.system.order.service.domain.entity.Customer;
-import com.food.ordering.system.order.service.domain.entity.Order;
-import com.food.ordering.system.order.service.domain.entity.Product;
+import com.food.ordering.system.order.service.domain.entity.Client;
+import com.food.ordering.system.order.service.domain.entity.Commande;
+import com.food.ordering.system.order.service.domain.entity.Produit;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
 import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = OrderTestConfiguration.class)
-public class OrderApplicationServiceTest {
+public class CommandeApplicationServiceTest {
 
     @Autowired
     private OrderApplicationService orderApplicationService;
@@ -130,29 +130,29 @@ public class OrderApplicationServiceTest {
                                 .build()))
                 .build();
 
-        Customer customer = new Customer(new CustomerId(CUSTOMER_ID));
+        Client client = new Client(new ClientId(CUSTOMER_ID));
 
         Restaurant restaurantResponse = Restaurant.builder()
                 .restaurantId(new RestaurantId(createOrderCommand.getRestaurantId()))
-                .products(List.of(new Product(new ProductId(PRODUCT_ID), "product-1", new Money(new BigDecimal("50.00"))),
-                        new Product(new ProductId(PRODUCT_ID), "product-2", new Money(new BigDecimal("50.00")))))
+                .products(List.of(new Produit(new ProductId(PRODUCT_ID), "product-1", new Money(new BigDecimal("50.00"))),
+                        new Produit(new ProductId(PRODUCT_ID), "product-2", new Money(new BigDecimal("50.00")))))
                 .active(true)
                 .build();
 
-        Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
-        order.setId(new OrderId(ORDER_ID));
+        Commande commande = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
+        commande.setId(new OrderId(ORDER_ID));
 
-        when(customerRepository.findCustomer(CUSTOMER_ID)).thenReturn(Optional.of(customer));
+        when(customerRepository.findCustomer(CUSTOMER_ID)).thenReturn(Optional.of(client));
         when(restaurantRepository.findRestaurantInformation(orderDataMapper.createOrderCommandToRestaurant(createOrderCommand)))
                 .thenReturn(Optional.of(restaurantResponse));
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(orderRepository.save(any(Commande.class))).thenReturn(commande);
     }
 
     @Test
     public void testCreateOrder() {
         CreateOrderResponse createOrderResponse = orderApplicationService.createOrder(createOrderCommand);
         assertEquals(OrderStatus.PENDING, createOrderResponse.getOrderStatus());
-        assertEquals("Order created successfully", createOrderResponse.getMessage());
+        assertEquals("Commande created successfully", createOrderResponse.getMessage());
         assertNotNull(createOrderResponse.getOrderTrackingId());
     }
 
@@ -160,22 +160,22 @@ public class OrderApplicationServiceTest {
     public void testCreateOrderWithWrongTotalPrice() {
         OrderDomainException orderDomainException = assertThrows(OrderDomainException.class,
                 () -> orderApplicationService.createOrder(createOrderCommandWrongPrice));
-        assertEquals("Total price: 250.00 is not equal to Order items total: 200.00!", orderDomainException.getMessage());
+        assertEquals("Total price: 250.00 is not equal to Commande items total: 200.00!", orderDomainException.getMessage());
     }
 
     @Test
     public void testCreateOrderWithWrongProductPrice() {
         OrderDomainException orderDomainException = assertThrows(OrderDomainException.class,
                 () -> orderApplicationService.createOrder(createOrderCommandWrongProductPrice));
-        assertEquals("Order item price: 60.00 is not valid for product " + PRODUCT_ID, orderDomainException.getMessage());
+        assertEquals("Commande item price: 60.00 is not valid for product " + PRODUCT_ID, orderDomainException.getMessage());
     }
 
     @Test
     public void testCreateOrderWithPassiveRestaurant() {
         Restaurant restaurantResponse = Restaurant.builder()
                 .restaurantId(new RestaurantId(createOrderCommand.getRestaurantId()))
-                .products(List.of(new Product(new ProductId(PRODUCT_ID), "product-1", new Money(new BigDecimal("50.00"))),
-                        new Product(new ProductId(PRODUCT_ID), "product-2", new Money(new BigDecimal("50.00")))))
+                .products(List.of(new Produit(new ProductId(PRODUCT_ID), "product-1", new Money(new BigDecimal("50.00"))),
+                        new Produit(new ProductId(PRODUCT_ID), "product-2", new Money(new BigDecimal("50.00")))))
                 .active(false)
                 .build();
         when(restaurantRepository.findRestaurantInformation(orderDataMapper.createOrderCommandToRestaurant(createOrderCommand)))

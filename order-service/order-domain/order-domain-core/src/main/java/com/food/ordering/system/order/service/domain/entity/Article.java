@@ -3,31 +3,31 @@ package com.food.ordering.system.order.service.domain.entity;
 import com.food.ordering.system.domain.entity.BaseEntity;
 import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.domain.valueobject.OrderId;
-import com.food.ordering.system.order.service.domain.valueobject.OrderItemId;
+import com.food.ordering.system.order.service.domain.valueobject.ArticleId;
 import lombok.Getter;
 
 @Getter
-public class OrderItem extends BaseEntity<OrderItemId> {
+public class Article extends BaseEntity<ArticleId> {
     private OrderId orderId;
-    private final Product product;
+    private final Produit produit;
     private final int quantity;
     private final Money price;
     private final Money subTotal;
 
-    void initializeOrderItem(OrderId orderId, OrderItemId orderItemId) {
+    void initializeOrderItem(OrderId orderId, ArticleId articleId) {
         this.orderId = orderId;
-        super.setId(orderItemId);
+        super.setId(articleId);
     }
 
     boolean isPriceValid() {
         return price.isGreaterThanZero() &&
-                price.equals(product.getPrice()) &&
+                price.equals(produit.getPrice()) &&
                 price.multiply(quantity).equals(subTotal);
     }
 
-    private OrderItem(Builder builder) {
-        super.setId(builder.orderItemId);
-        product = builder.product;
+    private Article(Builder builder) {
+        super.setId(builder.articleId);
+        produit = builder.produit;
         quantity = builder.quantity;
         price = builder.price;
         subTotal = builder.subTotal;
@@ -39,8 +39,8 @@ public class OrderItem extends BaseEntity<OrderItemId> {
 
 
     public static final class Builder {
-        private OrderItemId orderItemId;
-        private Product product;
+        private ArticleId articleId;
+        private Produit produit;
         private int quantity;
         private Money price;
         private Money subTotal;
@@ -48,13 +48,13 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         private Builder() {
         }
 
-        public Builder orderItemId(OrderItemId val) {
-            orderItemId = val;
+        public Builder orderItemId(ArticleId val) {
+            articleId = val;
             return this;
         }
 
-        public Builder product(Product val) {
-            product = val;
+        public Builder product(Produit val) {
+            produit = val;
             return this;
         }
 
@@ -73,8 +73,8 @@ public class OrderItem extends BaseEntity<OrderItemId> {
             return this;
         }
 
-        public OrderItem build() {
-            return new OrderItem(this);
+        public Article build() {
+            return new Article(this);
         }
     }
 }

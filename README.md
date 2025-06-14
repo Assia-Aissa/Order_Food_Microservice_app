@@ -15,7 +15,7 @@ This is a **student-made backend project** that simulates a simple **Food Orderi
 ## ✨ Key Features
 
 * Order food from available restaurants
-* Track order status
+* Track commande status
 * Process payments (mocked)
 * Restaurants can approve or reject orders
 * Customer info is stored and retrievable

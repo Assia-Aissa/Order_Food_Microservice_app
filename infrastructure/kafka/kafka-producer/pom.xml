@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>com.food.ordering.system</groupId>
-            <artifactId>order-domain-core</artifactId>
+            <artifactId>commande-domain-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.food.ordering.system</groupId>

@@ -6,12 +6,12 @@ import com.food.ordering.system.domain.valueobject.RestaurantId;
 import java.util.List;
 
 public class Restaurant extends AggregateRoot<RestaurantId> {
-    private final List<Product> products;
+    private final List<Produit> produits;
     private boolean active;
 
     private Restaurant(Builder builder) {
         super.setId(builder.restaurantId);
-        products = builder.products;
+        produits = builder.produits;
         active = builder.active;
     }
 
@@ -19,8 +19,8 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
         return new Builder();
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<Produit> getProducts() {
+        return produits;
     }
 
     public boolean isActive() {
@@ -29,7 +29,7 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
 
     public static final class Builder {
         private RestaurantId restaurantId;
-        private List<Product> products;
+        private List<Produit> produits;
         private boolean active;
 
         private Builder() {
@@ -40,8 +40,8 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
             return this;
         }
 
-        public Builder products(List<Product> val) {
-            products = val;
+        public Builder products(List<Produit> val) {
+            produits = val;
             return this;
         }
 

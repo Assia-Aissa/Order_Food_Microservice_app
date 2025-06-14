@@ -83,8 +83,8 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
     private void validateCreditEntry(Payment payment, CreditEntry creditEntry, List<String> failureMessages) {
         if (payment.getPrice().isGreaterThan(creditEntry.getTotalCreditAmount())) {
             log.error("Customer with id: {} doesn't have enough credit for payment!",
-                    payment.getCustomerId().getValue());
-            failureMessages.add("Customer with id=" + payment.getCustomerId().getValue()
+                    payment.getClientId().getValue());
+            failureMessages.add("Customer with id=" + payment.getClientId().getValue()
                     + " doesn't have enough credit for payment!");
         }
     }
@@ -98,7 +98,7 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
                                      TransactionType transactionType) {
         creditHistories.add(CreditHistory.builder()
                 .creditHistoryId(new CreditHistoryId(UUID.randomUUID()))
-                .customerId(payment.getCustomerId())
+                .customerId(payment.getClientId())
                 .amount(payment.getPrice())
                 .transactionType(transactionType)
                 .build());
@@ -113,16 +113,16 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
 
         if (totalDebitHistory.isGreaterThan(totalCreditHistory)) {
             log.error("Customer with id: {} doesn't have enough credit according to credit history",
-                    creditEntry.getCustomerId().getValue());
-            failureMessages.add("Customer with id=" + creditEntry.getCustomerId().getValue() +
+                    creditEntry.getClientId().getValue());
+            failureMessages.add("Customer with id=" + creditEntry.getClientId().getValue() +
                     " doesn't have enough credit according to credit history!");
         }
 
         if (!creditEntry.getTotalCreditAmount().equals(totalCreditHistory.subtract(totalDebitHistory))) {
             log.error("Credit history total is not equal to current credit for customer id: {}!",
-                    creditEntry.getCustomerId().getValue());
+                    creditEntry.getClientId().getValue());
             failureMessages.add("Credit history total is not equal to current credit for customer id: {}" +
-                    creditEntry.getCustomerId().getValue() + "!");
+                    creditEntry.getClientId().getValue() + "!");
         }
     }
 

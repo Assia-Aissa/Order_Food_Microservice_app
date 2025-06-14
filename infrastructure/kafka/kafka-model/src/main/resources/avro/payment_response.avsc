@@ -1,5 +1,5 @@
 {
-    "namespace": "com.food.ordering.system.kafka.order.avro.model",
+    "namespace": "com.food.ordering.system.kafka.commande.avro.model",
     "type": "record",
     "name": "PaymentResponseAvroModel",
     "fields": [
@@ -25,7 +25,7 @@
             }
         },
         {
-            "name": "customerId",
+            "name": "clientId",
             "type": {
                 "type": "string",
                 "logicalType": "uuid"

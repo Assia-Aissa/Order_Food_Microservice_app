@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <modules>
-        <module>order-service</module>
+        <module>commande-service</module>
         <module>common</module>
         <module>infrastructure</module>
-        <module>customer-service</module>
+        <module>client-service</module>
         <module>payment-service</module>
         <module>restaurant-service</module>
     </modules>
@@ -42,27 +42,27 @@
             </dependency>
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
-                <artifactId>order-domain-core</artifactId>
+                <artifactId>commande-domain-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
-                <artifactId>order-application-service</artifactId>
+                <artifactId>commande-application-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
-                <artifactId>order-application</artifactId>
+                <artifactId>commande-application</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
-                <artifactId>order-dataaccess</artifactId>
+                <artifactId>commande-dataaccess</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
-                <artifactId>order-messaging</artifactId>
+                <artifactId>commande-messaging</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

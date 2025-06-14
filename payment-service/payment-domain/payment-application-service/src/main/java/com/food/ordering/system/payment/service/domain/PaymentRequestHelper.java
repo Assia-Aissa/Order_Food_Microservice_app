@@ -1,7 +1,7 @@
 package com.food.ordering.system.payment.service.domain;
 
 
-import com.food.ordering.system.domain.valueobject.CustomerId;
+import com.food.ordering.system.domain.valueobject.ClientId;
 import com.food.ordering.system.payment.service.domain.dto.PaymentRequest;
 import com.food.ordering.system.payment.service.domain.entity.CreditEntry;
 import com.food.ordering.system.payment.service.domain.entity.CreditHistory;
@@ -60,8 +60,8 @@ public class PaymentRequestHelper {
     public PaymentEvent persistPayment(PaymentRequest paymentRequest) {
         log.info("Received payment complete event for order id: {}", paymentRequest.getOrderId());
         Payment payment = paymentDataMapper.paymentRequestModelToPayment(paymentRequest);
-        CreditEntry creditEntry = getCreditEntry(payment.getCustomerId());
-        List<CreditHistory> creditHistories = getCreditHistory(payment.getCustomerId());
+        CreditEntry creditEntry = getCreditEntry(payment.getClientId());
+        List<CreditHistory> creditHistories = getCreditHistory(payment.getClientId());
         List<String> failureMessages = new ArrayList<>();
         PaymentEvent paymentEvent =
                 paymentDomainService.validateAndInitiatePayment(payment, creditEntry, creditHistories, failureMessages,
@@ -81,8 +81,8 @@ public class PaymentRequestHelper {
                     paymentRequest.getOrderId() + " could not be found!");
         }
         Payment payment = paymentResponse.get();
-        CreditEntry creditEntry = getCreditEntry(payment.getCustomerId());
-        List<CreditHistory> creditHistories = getCreditHistory(payment.getCustomerId());
+        CreditEntry creditEntry = getCreditEntry(payment.getClientId());
+        List<CreditHistory> creditHistories = getCreditHistory(payment.getClientId());
         List<String> failureMessages = new ArrayList<>();
         PaymentEvent paymentEvent = paymentDomainService
                 .validateAndCancelPayment(payment, creditEntry, creditHistories, failureMessages,
@@ -91,22 +91,22 @@ public class PaymentRequestHelper {
         return paymentEvent;
     }
 
-    private CreditEntry getCreditEntry(CustomerId customerId) {
-        Optional<CreditEntry> creditEntry = creditEntryRepository.findByCustomerId(customerId);
+    private CreditEntry getCreditEntry(ClientId clientId) {
+        Optional<CreditEntry> creditEntry = creditEntryRepository.findByCustomerId(clientId);
         if (creditEntry.isEmpty()) {
-            log.error("Could not find credit entry for customer: {}", customerId.getValue());
+            log.error("Could not find credit entry for customer: {}", clientId.getValue());
             throw new PaymentApplicationServiceException("Could not find credit entry for customer: " +
-                    customerId.getValue());
+                    clientId.getValue());
         }
         return creditEntry.get();
     }
 
-    private List<CreditHistory> getCreditHistory(CustomerId customerId) {
-        Optional<List<CreditHistory>> creditHistories = creditHistoryRepository.findByCustomerId(customerId);
+    private List<CreditHistory> getCreditHistory(ClientId clientId) {
+        Optional<List<CreditHistory>> creditHistories = creditHistoryRepository.findByCustomerId(clientId);
         if (creditHistories.isEmpty()) {
-            log.error("Could not find credit history for customer: {}", customerId.getValue());
+            log.error("Could not find credit history for customer: {}", clientId.getValue());
             throw new PaymentApplicationServiceException("Could not find credit history for customer: " +
-                    customerId.getValue());
+                    clientId.getValue());
         }
         return creditHistories.get();
     }

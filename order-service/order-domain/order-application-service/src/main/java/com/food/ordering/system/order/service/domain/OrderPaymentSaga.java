@@ -2,7 +2,7 @@ package com.food.ordering.system.order.service.domain;
 
 import com.food.ordering.system.domain.event.EmptyEvent;
 import com.food.ordering.system.order.service.domain.dto.message.PaymentResponse;
-import com.food.ordering.system.order.service.domain.entity.Order;
+import com.food.ordering.system.order.service.domain.entity.Commande;
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent;
 import com.food.ordering.system.order.service.domain.ports.output.message.publisher.restaurantApproval.OrderPaidRestaurantRequestMessagePublisher;
 import com.food.ordering.system.order.service.domain.service.OrderDomainService;
@@ -31,21 +31,21 @@ public class OrderPaymentSaga implements SagaStep<PaymentResponse, OrderPaidEven
     @Transactional
     public OrderPaidEvent process(PaymentResponse paymentResponse) {
 
-        Order order = orderSagaHelper.findOrder(paymentResponse.getOrderId());
-        OrderPaidEvent domainEvent = orderDomainService.payOrder(order, orderPaidRestaurantRequestMessagePublisher);
-        orderSagaHelper.saveOrder(order);
-        log.info("Order with id: {} is paid", order.getId().getValue());
+        Commande commande = orderSagaHelper.findOrder(paymentResponse.getOrderId());
+        OrderPaidEvent domainEvent = orderDomainService.payOrder(commande, orderPaidRestaurantRequestMessagePublisher);
+        orderSagaHelper.saveOrder(commande);
+        log.info("Commande with id: {} is paid", commande.getId().getValue());
         return domainEvent;
     }
 
     @Override
     @Transactional
     public EmptyEvent rollback(PaymentResponse paymentResponse) {
-        log.info("Cancelling order with id: {}", paymentResponse.getOrderId());
-        Order order = orderSagaHelper.findOrder(paymentResponse.getOrderId());
-        orderDomainService.cancelOrder(order, paymentResponse.getFailureMessages());
-        orderSagaHelper.saveOrder(order);
-        log.info("Order with id: {} is cancelled", order.getId().getValue());
+        log.info("Cancelling commande with id: {}", paymentResponse.getOrderId());
+        Commande commande = orderSagaHelper.findOrder(paymentResponse.getOrderId());
+        orderDomainService.cancelOrder(commande, paymentResponse.getFailureMessages());
+        orderSagaHelper.saveOrder(commande);
+        log.info("Commande with id: {} is cancelled", commande.getId().getValue());
         return EmptyEvent.INSTANCE;
     }
 

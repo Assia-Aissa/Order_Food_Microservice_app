@@ -1,8 +1,8 @@
 package com.food.ordering.system.order.service.domain;
 
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand;
-import com.food.ordering.system.order.service.domain.entity.Customer;
-import com.food.ordering.system.order.service.domain.entity.Order;
+import com.food.ordering.system.order.service.domain.entity.Client;
+import com.food.ordering.system.order.service.domain.entity.Commande;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
@@ -53,11 +53,11 @@ public class OrderCreateHelper {
     public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand) {
         checkCustomer(createOrderCommand.getCustomerId());
         Restaurant restaurant = checkRestaurant(createOrderCommand);
-        Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
-        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant,
+        Commande commande = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
+        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(commande, restaurant,
                 orderCreatedEventDomainEventPublisher);
-        saveOrder(order);
-        log.info("Order is created with id: {}", orderCreatedEvent.getOrder().getId().getValue());
+        saveOrder(commande);
+        log.info("Commande is created with id: {}", orderCreatedEvent.getCommande().getId().getValue());
         return orderCreatedEvent;
     }
 
@@ -73,20 +73,20 @@ public class OrderCreateHelper {
     }
 
     private void checkCustomer(UUID customerId) {
-        Optional<Customer> customer = customerRepository.findCustomer(customerId);
+        Optional<Client> customer = customerRepository.findCustomer(customerId);
         if (customer.isEmpty()) {
             log.warn("Could not find customer with customer id: {}", customerId);
             throw new OrderDomainException("Could not find customer with customer id: " + customer);
         }
     }
 
-    private Order saveOrder(Order order) {
-        Order orderResult = orderRepository.save(order);
-        if (orderResult == null) {
-            log.error("Could not save order!");
-            throw new OrderDomainException("Could not save order!");
+    private Commande saveOrder(Commande commande) {
+        Commande commandeResult = orderRepository.save(commande);
+        if (commandeResult == null) {
+            log.error("Could not save commande!");
+            throw new OrderDomainException("Could not save commande!");
         }
-        log.info("Order is saved with id: {}", orderResult.getId().getValue());
-        return orderResult;
+        log.info("Commande is saved with id: {}", commandeResult.getId().getValue());
+        return commandeResult;
     }
 }

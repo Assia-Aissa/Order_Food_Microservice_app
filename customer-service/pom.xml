@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>customer-service</artifactId>
+    <artifactId>client-service</artifactId>
 
     <dependencies>
         <dependency>
@@ -33,7 +33,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>${project.groupId}/customer.service:${project.version}</name>
+                        <name>${project.groupId}/client.service:${project.version}</name>
                     </image>
                 </configuration>
                 <executions>

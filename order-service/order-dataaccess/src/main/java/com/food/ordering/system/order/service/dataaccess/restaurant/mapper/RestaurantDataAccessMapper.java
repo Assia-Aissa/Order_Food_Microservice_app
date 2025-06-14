@@ -5,7 +5,7 @@ import com.food.ordering.system.dataaccess.restaurant.exception.RestaurantDataAc
 import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.domain.valueobject.ProductId;
 import com.food.ordering.system.domain.valueobject.RestaurantId;
-import com.food.ordering.system.order.service.domain.entity.Product;
+import com.food.ordering.system.order.service.domain.entity.Produit;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import org.springframework.stereotype.Component;
 
@@ -27,13 +27,13 @@ public class RestaurantDataAccessMapper {
                 restaurantEntities.stream().findFirst().orElseThrow(() ->
                         new RestaurantDataAccessException("Restaurant could not be found!"));
 
-        List<Product> restaurantProducts = restaurantEntities.stream().map(entity ->
-                new Product(new ProductId(entity.getProductId()), entity.getProductName(),
+        List<Produit> restaurantProduits = restaurantEntities.stream().map(entity ->
+                new Produit(new ProductId(entity.getProductId()), entity.getProductName(),
                         new Money(entity.getProductPrice()))).toList();
 
         return Restaurant.builder()
                 .restaurantId(new RestaurantId(restaurantEntity.getRestaurantId()))
-                .products(restaurantProducts)
+                .products(restaurantProduits)
                 .active(restaurantEntity.getRestaurantActive())
                 .build();
     }

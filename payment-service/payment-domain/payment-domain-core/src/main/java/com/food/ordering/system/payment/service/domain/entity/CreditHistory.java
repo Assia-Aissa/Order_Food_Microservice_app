@@ -1,7 +1,7 @@
 package com.food.ordering.system.payment.service.domain.entity;
 
 import com.food.ordering.system.domain.entity.BaseEntity;
-import com.food.ordering.system.domain.valueobject.CustomerId;
+import com.food.ordering.system.domain.valueobject.ClientId;
 import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.payment.service.domain.valueObject.CreditHistoryId;
 import com.food.ordering.system.payment.service.domain.valueObject.TransactionType;
@@ -10,13 +10,13 @@ import lombok.Getter;
 @Getter
 public class CreditHistory extends BaseEntity<CreditHistoryId> {
 
-    private final CustomerId customerId;
+    private final ClientId clientId;
     private final Money amount;
     private final TransactionType transactionType;
 
     private CreditHistory(Builder builder) {
         setId(builder.creditHistoryId);
-        customerId = builder.customerId;
+        clientId = builder.clientId;
         amount = builder.amount;
         transactionType = builder.transactionType;
     }
@@ -28,7 +28,7 @@ public class CreditHistory extends BaseEntity<CreditHistoryId> {
 
     public static final class Builder {
         private CreditHistoryId creditHistoryId;
-        private CustomerId customerId;
+        private ClientId clientId;
         private Money amount;
         private TransactionType transactionType;
 
@@ -40,8 +40,8 @@ public class CreditHistory extends BaseEntity<CreditHistoryId> {
             return this;
         }
 
-        public Builder customerId(CustomerId val) {
-            customerId = val;
+        public Builder customerId(ClientId val) {
+            clientId = val;
             return this;
         }
 

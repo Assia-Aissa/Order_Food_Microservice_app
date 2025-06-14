@@ -1,10 +1,10 @@
-DROP SCHEMA IF EXISTS customer CASCADE;
+DROP SCHEMA IF EXISTS client CASCADE;
 
-CREATE SCHEMA customer;
+CREATE SCHEMA client;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE customer.customers
+CREATE TABLE client.customers
 (
     id uuid NOT NULL,
     username character varying COLLATE pg_catalog."default" NOT NULL,
@@ -13,34 +13,34 @@ CREATE TABLE customer.customers
     CONSTRAINT customers_pkey PRIMARY KEY (id)
 );
 
-DROP MATERIALIZED VIEW IF EXISTS customer.order_customer_m_view;
+DROP MATERIALIZED VIEW IF EXISTS client.order_customer_m_view;
 
-CREATE MATERIALIZED VIEW customer.order_customer_m_view
+CREATE MATERIALIZED VIEW client.order_customer_m_view
 TABLESPACE pg_default
 AS
  SELECT id,
     username,
     first_name,
     last_name
-   FROM customer.customers
+   FROM client.customers
 WITH DATA;
 
-refresh materialized VIEW customer.order_customer_m_view;
+refresh materialized VIEW client.order_customer_m_view;
 
-DROP function IF EXISTS customer.refresh_order_customer_m_view;
+DROP function IF EXISTS client.refresh_order_customer_m_view;
 
-CREATE OR replace function customer.refresh_order_customer_m_view()
+CREATE OR replace function client.refresh_order_customer_m_view()
 returns trigger
 AS '
 BEGIN
-    refresh materialized VIEW customer.order_customer_m_view;
+    refresh materialized VIEW client.order_customer_m_view;
     return null;
 END;
 '  LANGUAGE plpgsql;
 
-DROP trigger IF EXISTS refresh_order_customer_m_view ON customer.customers;
+DROP trigger IF EXISTS refresh_order_customer_m_view ON client.customers;
 
 CREATE trigger refresh_order_customer_m_view
 after INSERT OR UPDATE OR DELETE OR truncate
-ON customer.customers FOR each statement
-EXECUTE PROCEDURE customer.refresh_order_customer_m_view();
+ON client.customers FOR each statement
+EXECUTE PROCEDURE client.refresh_order_customer_m_view();
